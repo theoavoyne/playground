@@ -5,10 +5,6 @@ const path = require('path');
 const webpack = require('webpack');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
-const compact = (array) => (
-  array.filter((item) => item)
-);
-
 module.exports = (env) => {
   const { env: environment, analyze } = env;
 
@@ -65,7 +61,7 @@ module.exports = (env) => {
         : '[name].js',
       path: path.resolve(__dirname, 'public'),
     },
-    plugins: compact([
+    plugins: [
       new MiniCssExtractPlugin({
         filename: environment === 'production'
           ? '[name].[contenthash].css'
@@ -79,11 +75,12 @@ module.exports = (env) => {
         REACT_ENV: JSON.stringify(environment),
       }),
       new HtmlWebpackPlugin({
-        title: 'React Boilerplate',
         template: 'template.html',
         favicon: './src/static/images/favicon.png',
       }),
-      analyze ? new BundleAnalyzerPlugin() : undefined,
-    ]),
+      new BundleAnalyzerPlugin({
+        analyzerMode: analyze ? 'server' : 'disabled',
+      }),
+    ],
   };
 };
